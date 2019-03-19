@@ -1,0 +1,51 @@
+pragma solidity >=0.5.0 <0.7.0;
+
+// The following contract implements the simplest form of a cryptocurrency
+
+contract Coin {
+    // The keyword "public" makes those variables
+    // easily readable from outside.
+    address public minter;                      // declares a state variable of type address that is publicly accessible.
+    
+    // Creates a public state variable (maps), which addresses to unsigned integers. 
+    // Mappings can be seen as hash tables which are virtually initialized such that every possible key exists from the start 
+    // and is mapped to a value whose byte-representation is all zeros.
+    mapping (address => uint) public balances;
+
+    // Events allow light clients to react to
+    // changes efficiently.
+    event Sent(address from, address to, uint amount);
+
+    // This is the constructor whose code is
+    // run only when the contract is created.
+    // It permanently stores the address of the person creating the contract: msg
+    // msg (together with tx and block) is a special global variable that contains some properties which allow access to the blockchain. 
+    // msg.sender is always the address where the current (external) function call came from.
+    constructor() public {
+        minter = msg.sender;
+    }
+    
+    // Both mint() and send() actually end up with the contract and can be called by users and contracts alike
+
+    function mint(address receiver, uint amount) public {
+        // If mint is called by anyone except the account that created the contract, nothing will happen.
+        // This is ensured by the special function require() which causes all changes to be reverted if its argument evaluates to false.
+        require(msg.sender == minter);
+        // The second call to require() ensures that there will not be too many coins, which could cause overflow errors later.
+        require(amount < 1e60);
+        balances[receiver] += amount;
+    }
+
+    // send() can be used by anyone (who already has some of these coins) to send coins to anyone else.
+    function send(address receiver, uint amount) public {
+        require(amount <= balances[msg.sender], "Insufficient balance.");     // // If you do not have enough coins to send, the require call will fail and alert the user
+        balances[msg.sender] -= amount;
+        balances[receiver] += amount;
+        emit Sent(msg.sender, receiver, amount);
+    }
+    
+    // NOTE: If you use this contract to send coins to an address, you will not see anything when you look at that address on a blockchain explorer,
+    // because the fact that you sent coins and the changed balances are only stored in the data storage of this particular coin contract. 
+    // By the use of events it is relatively easy to create a “blockchain explorer” that tracks transactions and balances of your new coin, 
+    // but you have to inspect the coin contract address and not the addresses of the coin owners.
+}
