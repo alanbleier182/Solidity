@@ -7,7 +7,11 @@ pragma solidity >=0.4.22 <0.7.0;
 // then the creator of the contract (who serves as chairperson) will give the right to vote to each address individually.
 // The persons behind the addresses can then choose to either vote themselves or to delegate their vote to a person they trust.
 // At the end of the voting time, winningProposal() will return the proposal with the largest number of votes.
+//
+// Possible Improvements: 
+// Currently, many transactions are needed to assign the rights to vote to all participants. Is there a better way?
 
+/// @title Voting with delegation.
 contract Ballot {
     // This declares a new complex type which will
     // be used for variables later.
