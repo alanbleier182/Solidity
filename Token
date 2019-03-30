@@ -1,5 +1,9 @@
 pragma solidity >=0.4.22 <0.7.0;
 
+// A modular approach to building contracts helps prevent overflow risks and unexpected tokens.
+// In the example below, the contract uses the move method of the Balances library 
+// to check that balances sent between addresses match what you expect.
+
 library Balances {
     function move(mapping(address => uint256) storage balances, address from, address to, uint amount) internal {
         require(balances[from] >= amount);
