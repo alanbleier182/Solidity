@@ -57,6 +57,9 @@ contract SimplePaymentChannel {
     /// All functions below this are just taken from the chapter
     /// 'creating and verifying signatures' chapter.
 
+    // The function splitSignature does not use all security checks. 
+    // A real implementation should use a more rigorously tested library, such as openzepplin’s version of this code
+    
     function splitSignature(bytes memory sig)
         internal
         pure
